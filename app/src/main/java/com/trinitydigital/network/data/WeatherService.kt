@@ -15,6 +15,14 @@ interface WeatherService {
         @Query("units") units: String
     ): Call<CurrentWeather>
 
+    @GET("data/2.5/weather")
+    fun getWeatherByCoordinates(
+        @Query("lat") lat: String,
+        @Query("lon") lon: String,
+        @Query("appid") appId: String,
+        @Query("units") units: String
+    ): Call<CurrentWeather>
+
     @GET("data/2.5/forecast")
     fun forecast(
         @Query("q") city: String,

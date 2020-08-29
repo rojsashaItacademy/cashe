@@ -1,4 +1,4 @@
-package com.trinitydigital.network.data.model.current
+package com.trinitydigital.network.data.model.model.current
 
 import com.google.gson.annotations.SerializedName
 
@@ -14,19 +14,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class CurrentWeather (
+data class Coord (
 
-	@SerializedName("coord") val coord : Coord,
-	@SerializedName("weather") val weather : List<Weather>,
-	@SerializedName("base") val base : String,
-	@SerializedName("main") val main : Main,
-	@SerializedName("visibility") val visibility : Int,
-	@SerializedName("wind") val wind : Wind,
-	@SerializedName("clouds") val clouds : Clouds,
-	@SerializedName("dt") val dt : Int,
-	@SerializedName("sys") val sys : Sys,
-	@SerializedName("timezone") val timezone : Int,
-	@SerializedName("id") val id : Int,
-	@SerializedName("name") val name : String,
-	@SerializedName("cod") val cod : Int
+	@SerializedName("lon") val lon : Double,
+	@SerializedName("lat") val lat : Double
 )

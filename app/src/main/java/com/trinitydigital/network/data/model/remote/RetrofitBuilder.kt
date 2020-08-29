@@ -1,4 +1,4 @@
-package com.trinitydigital.network.data
+package com.trinitydigital.network.data.model.remote
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

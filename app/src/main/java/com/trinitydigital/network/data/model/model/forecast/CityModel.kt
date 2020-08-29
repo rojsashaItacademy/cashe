@@ -1,6 +1,11 @@
-package com.trinitydigital.network.data.model.forecast
+package com.trinitydigital.network.data.model.model.forecast
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class CityModel(
+    @PrimaryKey
     val id: Int,
     val name: String,
     val country: String,
@@ -9,5 +14,4 @@ data class CityModel(
     val sunrise: Int,
     val sunset: Int,
     val coord: Coord
-) {
-}
+)

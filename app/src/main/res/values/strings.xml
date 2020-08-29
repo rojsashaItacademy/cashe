@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Network</string>
     <string name="api_key">56c6ff853ea0febd1f986d08a3f34d60</string>
+    <string name="image_url">http://openweathermap.org/img/w/%1s.png</string>
 </resources>

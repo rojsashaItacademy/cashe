@@ -1,7 +1,7 @@
-package com.trinitydigital.network.data
+package com.trinitydigital.network.data.model.remote
 
-import com.trinitydigital.network.data.model.current.CurrentWeather
-import com.trinitydigital.network.data.model.forecast.ForecastModel
+import com.trinitydigital.network.data.model.model.current.CurrentWeather
+import com.trinitydigital.network.data.model.model.forecast.ForecastModel
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

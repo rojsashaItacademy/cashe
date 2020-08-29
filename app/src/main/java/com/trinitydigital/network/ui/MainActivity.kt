@@ -1,26 +1,26 @@
 package com.trinitydigital.network.ui
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.trinitydigital.network.R
-import com.trinitydigital.network.data.RetrofitBuilder
-import com.trinitydigital.network.data.RvAdapter
-import com.trinitydigital.network.data.model.current.CurrentWeather
-import com.trinitydigital.network.data.model.forecast.ForecastModel
+import com.trinitydigital.network.WeatherApp
+import com.trinitydigital.network.data.model.remote.RetrofitBuilder
+import com.trinitydigital.network.data.model.model.current.CurrentWeather
+import com.trinitydigital.network.data.model.model.forecast.ForecastModel
 import com.trinitydigital.network.utils.ConnectionUtils
 import com.trinitydigital.network.utils.PermissionUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val adapter = RvAdapter()
@@ -29,9 +29,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        formatDate()
+        recycerView.adapter = adapter
 
         val isHasNetwork = ConnectionUtils.isNetworkAvailable(this)
+
+        forecastWeather("Bishkek")
 
         if (!isHasNetwork) {
             showShackBar()
@@ -41,49 +43,25 @@ class MainActivity : AppCompatActivity() {
             loadLocation()
         }
 
-        RetrofitBuilder.getService()
-            ?.getWeather("Bishkek", getString(R.string.api_key), "metric")
-            ?.enqueue(object : Callback<CurrentWeather> {
-                override fun onResponse(
-                    call: Call<CurrentWeather>,
-                    response: Response<CurrentWeather>
-                ) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val data = response.body()
-                    } else {
-//                        Toast.makeText(applicationContext, " no data", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-                override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
-//                   Toast.makeText(applicationContext, t.localizedMessage, Toast.LENGTH_SHORT).show()
-                }
-            })
-
-
+        WeatherApp.getApp()?.getDb()?.getDao()?.getAll()?.observe(this, {
+            if (it.isNotEmpty()) {
+                val item = it.first()
+                adapter.update(item.list)
+            }
+        })
     }
-
-    private fun formatDate() {
-        val sfdDay = SimpleDateFormat("d", Locale.getDefault())
-        val date = Date()
-        val day = sfdDay.format(date)
-        tvDay.text = day
-        val sfdMonth = SimpleDateFormat("MMMM\nyyyy", Locale.getDefault())
-        val month = sfdMonth.format(date)
-        tvMonth.text = month
-    }
-
 
     private fun forecastWeather(city: String) {
         RetrofitBuilder.getService()?.forecast(city, getString(R.string.api_key), "metric")
             ?.enqueue(object : Callback<ForecastModel> {
-
                 override fun onResponse(
                     call: Call<ForecastModel>,
                     response: Response<ForecastModel>
                 ) {
                     if (response.isSuccessful && response.body() != null) {
-                        adapter.update(response.body()?.list)
+                        response.body()?.let {
+                            WeatherApp.getApp()?.getDb()?.getDao()?.addForecast(it)
+                        }
                     }
                 }
 
@@ -95,6 +73,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("MissingPermission")
     private fun loadLocation() {
         val fpc =
             LocationServices.getFusedLocationProviderClient(applicationContext)
